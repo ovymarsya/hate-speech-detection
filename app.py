@@ -191,7 +191,7 @@ st.markdown("""
     .result-box {
         border-radius: 14px;
         padding: 1.2rem 1.5rem;
-        margin-top: 2rem;
+        margin-top: 0.5rem;
         margin-bottom: 2rem; 
         font-weight: 600;
         font-size: 1rem;
@@ -252,7 +252,7 @@ st.markdown("""
         padding: 0.25rem 0.9rem;
         font-size: 0.78rem;
         font-weight: 600;
-        margin-bottom: 0.5rem;
+        margin-bottom: 3rem;
         margin-top: 0rem;        
         letter-spacing: 0.3px;
     }
