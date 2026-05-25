@@ -192,6 +192,7 @@ st.markdown("""
         border-radius: 14px;
         padding: 1.2rem 1.5rem;
         margin-top: 1rem;
+        margin-bottom: 1.5rem;   /* ← tambah ini */
         font-weight: 600;
         font-size: 1rem;
         backdrop-filter: blur(12px);
@@ -252,6 +253,7 @@ st.markdown("""
         font-size: 0.78rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
+        margin-top: 0rem;        
         letter-spacing: 0.3px;
     }
 
