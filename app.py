@@ -89,7 +89,7 @@ st.markdown("""
     .block-container {
         position: relative;
         z-index: 10;
-        padding-top: 7rem !important;
+        padding-top: 5rem !important;
     }
 
     /* ── Title box: frosted glass, sage border ── */
