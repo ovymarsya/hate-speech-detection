@@ -7,7 +7,7 @@ import numpy as np
 
 # ── Page config ──────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Deteksi Ujaran Kebencian SARA",
+    page_title="Deteksi Hate-Speech SARA",
     page_icon="🔍",
     layout="centered"
 )
@@ -411,7 +411,7 @@ if st.session_state.page == "input":
 
     st.markdown("""
     <div class="title-box">
-        <h1>🔍 Deteksi Ujaran Kebencian SARA</h1>
+        <h1>🔍 Deteksi Hate-Speech SARA</h1>
         <p>Sistem deteksi dua tahap: Hate Speech → Klasifikasi SARA</p>
     </div>
     """, unsafe_allow_html=True)
@@ -421,13 +421,13 @@ if st.session_state.page == "input":
     if notif == "ready":
         st.markdown("""
         <div class="notif-box notif-ready">
-            ✅ &nbsp;Model berhasil dimuat! Silahkan masukkan komentar untuk dianalisis.
+            ✅ &nbsp; Silahkan masukkan komentar untuk dianalisis.
         </div>
         """, unsafe_allow_html=True)
     elif notif == "empty":
         st.markdown("""
         <div class="notif-box notif-empty">
-            ⚠️ &nbsp;Teks tidak boleh kosong.
+            ⚠️ &nbsp;Teks tidak boleh kosong!
         </div>
         """, unsafe_allow_html=True)
     elif notif == "analyzing":
@@ -448,7 +448,7 @@ if st.session_state.page == "input":
 
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
-        analyze_btn = st.button("🔍 Analisis", use_container_width=True)
+        analyze_btn = st.button("🔍 Submit", use_container_width=True)
 
     if analyze_btn:
         if not user_input.strip():
@@ -558,7 +558,7 @@ elif st.session_state.page == "result":
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
-        if st.button("🔄 Analisis Teks Lain", use_container_width=True):
+        if st.button("Ulangi Prediksi", use_container_width=True):
             st.session_state.page = "input"
             st.rerun()
 
