@@ -21,60 +21,250 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    .main { background-color: #f8fafc; }
+    /* ── Animated background ── */
+    .stApp {
+        background: linear-gradient(-45deg, #0f0c29, #1a1a4e, #0d2137, #1b3a5c, #0f2027);
+        background-size: 400% 400%;
+        animation: gradientShift 12s ease infinite;
+        min-height: 100vh;
+    }
 
+    @keyframes gradientShift {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* ── Floating orbs ── */
+    .bg-orbs {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.18;
+        animation: floatOrb linear infinite;
+    }
+    .orb1 { width: 400px; height: 400px; background: #3b82f6; top: -100px; left: -100px; animation-duration: 20s; }
+    .orb2 { width: 300px; height: 300px; background: #06b6d4; top: 40%; right: -80px; animation-duration: 25s; animation-delay: -8s; }
+    .orb3 { width: 250px; height: 250px; background: #6366f1; bottom: -60px; left: 30%; animation-duration: 18s; animation-delay: -4s; }
+    .orb4 { width: 200px; height: 200px; background: #0ea5e9; top: 60%; left: 10%; animation-duration: 22s; animation-delay: -12s; }
+
+    @keyframes floatOrb {
+        0%   { transform: translateY(0px) translateX(0px) scale(1); }
+        33%  { transform: translateY(-40px) translateX(30px) scale(1.05); }
+        66%  { transform: translateY(20px) translateX(-20px) scale(0.95); }
+        100% { transform: translateY(0px) translateX(0px) scale(1); }
+    }
+
+    /* ── Stars / particles ── */
+    .stars {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .star {
+        position: absolute;
+        width: 2px; height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle ease-in-out infinite;
+        opacity: 0;
+    }
+    @keyframes twinkle {
+        0%, 100% { opacity: 0; transform: scale(1); }
+        50%       { opacity: 0.7; transform: scale(1.5); }
+    }
+
+    /* ── Glass card overlay ── */
+    .block-container {
+        position: relative;
+        z-index: 10;
+        padding-top: 2rem !important;
+    }
+
+    /* ── Title box (glassmorphism) ── */
     .title-box {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
-        border-radius: 16px;
-        padding: 2rem;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 2.2rem 2rem;
         margin-bottom: 1.5rem;
         color: white;
         text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        animation: fadeSlideDown 0.6s ease;
     }
-    .title-box h1 { font-size: 1.6rem; font-weight: 700; margin: 0; }
-    .title-box p  { font-size: 0.9rem; opacity: 0.85; margin: 0.5rem 0 0; }
+    .title-box h1 {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.3px;
+        text-shadow: 0 2px 12px rgba(59, 130, 246, 0.5);
+    }
+    .title-box p {
+        font-size: 0.88rem;
+        opacity: 0.75;
+        margin: 0.5rem 0 0;
+        letter-spacing: 0.3px;
+    }
 
+    @keyframes fadeSlideDown {
+        from { opacity: 0; transform: translateY(-16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Streamlit elements on dark bg ── */
+    .stTextArea textarea {
+        background: rgba(255,255,255,0.06) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 12px !important;
+        color: #e2e8f0 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        backdrop-filter: blur(10px);
+    }
+    .stTextArea textarea::placeholder { color: rgba(255,255,255,0.35) !important; }
+    .stTextArea textarea:focus {
+        border-color: rgba(59,130,246,0.6) !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.15) !important;
+    }
+    label, .stTextArea label { color: #cbd5e1 !important; }
+
+    .stButton > button {
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
+        border: none !important;
+        border-radius: 12px !important;
+        color: white !important;
+        font-weight: 600 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        padding: 0.6rem 1.5rem !important;
+        box-shadow: 0 4px 20px rgba(59,130,246,0.4) !important;
+        transition: all 0.2s ease !important;
+        letter-spacing: 0.2px !important;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 28px rgba(59,130,246,0.55) !important;
+    }
+    .stButton > button:active { transform: translateY(0px) !important; }
+
+    /* Success/Info/Warning boxes */
+    .stSuccess, .stInfo, .stWarning {
+        background: rgba(255,255,255,0.06) !important;
+        border-radius: 10px !important;
+        backdrop-filter: blur(8px) !important;
+        color: #e2e8f0 !important;
+    }
+    .stSuccess { border-left-color: #10b981 !important; }
+    .stInfo    { border-left-color: #3b82f6 !important; }
+    .stWarning { border-left-color: #f59e0b !important; }
+
+    /* Expander */
+    .streamlit-expanderHeader {
+        background: rgba(255,255,255,0.05) !important;
+        color: #94a3b8 !important;
+        border-radius: 10px !important;
+    }
+    .streamlit-expanderContent {
+        background: rgba(255,255,255,0.03) !important;
+        border-radius: 0 0 10px 10px !important;
+    }
+
+    /* Markdown headings */
+    h3 { color: #e2e8f0 !important; }
+    hr { border-color: rgba(255,255,255,0.1) !important; }
+
+    /* ── Result boxes (glassmorphism) ── */
     .result-box {
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 1.2rem 1.5rem;
         margin-top: 1rem;
         font-weight: 600;
         font-size: 1rem;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        animation: fadeSlideUp 0.4s ease;
     }
-    .result-nonhate  { background: #d1fae5; color: #065f46; border-left: 5px solid #10b981; }
-    .result-hate     { background: #fee2e2; color: #991b1b; border-left: 5px solid #ef4444; }
-    .result-sara     { background: #fef3c7; color: #92400e; border-left: 5px solid #f59e0b; }
-    .result-umum     { background: #ffe4e6; color: #9f1239; border-left: 5px solid #f43f5e; }
+    @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-nonhate { background: rgba(16,185,129,0.15); color: #6ee7b7; border-left: 4px solid #10b981; }
+    .result-hate    { background: rgba(239,68,68,0.15);  color: #fca5a5; border-left: 4px solid #ef4444; }
+    .result-sara    { background: rgba(245,158,11,0.15); color: #fcd34d; border-left: 4px solid #f59e0b; }
+    .result-umum    { background: rgba(244,63,94,0.15);  color: #fda4af; border-left: 4px solid #f43f5e; }
 
     .confidence-bar {
-        background: #e2e8f0;
+        background: rgba(255,255,255,0.1);
         border-radius: 8px;
-        height: 10px;
-        margin-top: 0.5rem;
+        height: 8px;
+        margin-top: 0.6rem;
         overflow: hidden;
     }
     .confidence-fill {
         height: 100%;
         border-radius: 8px;
-        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        box-shadow: 0 0 8px rgba(96,165,250,0.6);
     }
 
     .step-badge {
         display: inline-block;
-        background: #1e3a5f;
-        color: white;
+        background: rgba(30,58,95,0.8);
+        border: 1px solid rgba(59,130,246,0.4);
+        color: #93c5fd;
         border-radius: 20px;
-        padding: 0.2rem 0.8rem;
+        padding: 0.25rem 0.9rem;
         font-size: 0.78rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
+        letter-spacing: 0.3px;
     }
+
     .info-small {
         font-size: 0.8rem;
-        color: #64748b;
+        opacity: 0.75;
         margin-top: 0.3rem;
     }
 </style>
+
+<!-- Floating orbs -->
+<div class="bg-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <div class="orb orb4"></div>
+</div>
+
+<!-- Twinkling stars -->
+<div class="stars" id="stars"></div>
+
+<script>
+(function() {
+    const container = document.getElementById('stars');
+    if (!container) return;
+    for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left   = Math.random() * 100 + '%';
+        star.style.top    = Math.random() * 100 + '%';
+        star.style.animationDuration  = (2 + Math.random() * 4) + 's';
+        star.style.animationDelay     = (Math.random() * 5) + 's';
+        star.style.width  = star.style.height = (1 + Math.random() * 2) + 'px';
+        container.appendChild(star);
+    }
+})();
+</script>
 """, unsafe_allow_html=True)
 
 # ── Session state init ───────────────────────────────────────────
@@ -192,7 +382,7 @@ if st.session_state.page == "input":
 
     st.markdown("---")
     st.markdown(
-        "<div style='text-align:center; color:#94a3b8; font-size:0.8rem;'>"
+        "<div style='text-align:center; color:rgba(148,163,184,0.6); font-size:0.8rem;'>"
         "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
         "</div>",
         unsafe_allow_html=True
@@ -276,7 +466,7 @@ elif st.session_state.page == "result":
 
     st.markdown("---")
     st.markdown(
-        "<div style='text-align:center; color:#94a3b8; font-size:0.8rem;'>"
+        "<div style='text-align:center; color:rgba(148,163,184,0.6); font-size:0.8rem;'>"
         "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
         "</div>",
         unsafe_allow_html=True
