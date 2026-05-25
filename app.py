@@ -252,7 +252,7 @@ st.markdown("""
         padding: 0.25rem 0.9rem;
         font-size: 0.78rem;
         font-weight: 600;
-        margin-bottom: 3rem;
+        margin-bottom: 0.5rem;
         margin-top: 0rem;        
         letter-spacing: 0.3px;
     }
