@@ -21,7 +21,6 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* ── Animated background: cream + teal water-like gradient ── */
     .stApp {
         background: linear-gradient(-45deg, #e8f0e9, #d4ece8, #f5f0e8, #c9e4de, #eef4f0);
         background-size: 400% 400%;
@@ -35,7 +34,6 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* ── Floating orbs: sage/teal/gold tones ── */
     .bg-orbs {
         position: fixed;
         top: 0; left: 0;
@@ -64,7 +62,6 @@ st.markdown("""
         100% { transform: translateY(0px) translateX(0px) scale(1); }
     }
 
-    /* ── Shimmer particles (gold-ish) ── */
     .stars {
         position: fixed;
         top: 0; left: 0;
@@ -85,14 +82,12 @@ st.markdown("""
         50%       { opacity: 0.5; transform: scale(1.8); }
     }
 
-    /* ── Layout ── */
     .block-container {
         position: relative;
         z-index: 10;
         padding-top: 5rem !important;
     }
 
-    /* ── Title box: frosted glass, sage border ── */
     .title-box {
         background: rgba(255, 255, 255, 0.45);
         backdrop-filter: blur(18px);
@@ -127,7 +122,6 @@ st.markdown("""
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Inputs ── */
     .stTextArea textarea {
         background: rgba(255,255,255,0.55) !important;
         border: 1px solid rgba(125, 191, 176, 0.4) !important;
@@ -143,7 +137,6 @@ st.markdown("""
     }
     label, .stTextArea label { color: #3d5e52 !important; }
 
-    /* ── Button: gold accent ── */
     .stButton > button {
         background: linear-gradient(135deg, #8aab8e, #6aab9c) !important;
         border: none !important;
@@ -163,7 +156,6 @@ st.markdown("""
     }
     .stButton > button:active { transform: translateY(0px) !important; }
 
-    /* ── Streamlit alert boxes ── */
     .stSuccess {
         background: rgba(168, 213, 194, 0.25) !important;
         border-left-color: #6aab9c !important;
@@ -183,7 +175,6 @@ st.markdown("""
         border-radius: 10px !important;
     }
 
-    /* ── Expander ── */
     .streamlit-expanderHeader {
         background: rgba(255,255,255,0.4) !important;
         color: #5a7a6e !important;
@@ -194,11 +185,9 @@ st.markdown("""
         border-radius: 0 0 10px 10px !important;
     }
 
-    /* ── Typography ── */
     h3 { color: #2d4a3e !important; }
     hr { border-color: rgba(125, 191, 176, 0.25) !important; }
 
-    /* ── Result boxes ── */
     .result-box {
         border-radius: 14px;
         padding: 1.2rem 1.5rem;
@@ -271,6 +260,49 @@ st.markdown("""
         opacity: 0.72;
         margin-top: 0.3rem;
     }
+
+    /* ── Notification box ── */
+    .notif-box {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: fadeSlideDown 0.35s ease;
+        margin-bottom: 0.25rem;
+    }
+    .notif-ready {
+        background: rgba(168, 213, 194, 0.3);
+        border-left: 4px solid #6aab9c;
+        color: #1e4a38;
+    }
+    .notif-empty {
+        background: rgba(245, 200, 100, 0.2);
+        border-left: 4px solid #d4a84b;
+        color: #4a3a10;
+    }
+    .notif-analyzing {
+        background: rgba(125, 191, 176, 0.2);
+        border-left: 4px solid #7dbfb0;
+        color: #1e3d34;
+    }
+    .notif-spinner {
+        display: inline-block;
+        width: 0.875rem;
+        height: 0.875rem;
+        border: 2px solid rgba(106,171,156,0.3);
+        border-top-color: #6aab9c;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        flex-shrink: 0;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 </style>
 
 <!-- Floating orbs -->
@@ -310,6 +342,8 @@ if "result" not in st.session_state:
     st.session_state.result = None
 if "user_input" not in st.session_state:
     st.session_state.user_input = ""
+if "notif_state" not in st.session_state:
+    st.session_state.notif_state = "ready"
 
 # ── Load models ──────────────────────────────────────────────────
 @st.cache_resource
@@ -380,8 +414,27 @@ if st.session_state.page == "input":
     </div>
     """, unsafe_allow_html=True)
 
-    if models_loaded:
-        st.success("✅ Model berhasil dimuat!")
+    # ── Notifikasi dinamis ──────────────────────────────────────
+    notif = st.session_state.notif_state
+    if notif == "ready":
+        st.markdown("""
+        <div class="notif-box notif-ready">
+            ✅ &nbsp;Model berhasil dimuat! Silahkan masukkan komentar untuk dianalisis.
+        </div>
+        """, unsafe_allow_html=True)
+    elif notif == "empty":
+        st.markdown("""
+        <div class="notif-box notif-empty">
+            ⚠️ &nbsp;Teks tidak boleh kosong.
+        </div>
+        """, unsafe_allow_html=True)
+    elif notif == "analyzing":
+        st.markdown("""
+        <div class="notif-box notif-analyzing">
+            <span class="notif-spinner"></span>
+            &nbsp;Menganalisis, silahkan tunggu...
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("### 💬 Masukkan Komentar")
     user_input = st.text_area(
@@ -397,24 +450,31 @@ if st.session_state.page == "input":
 
     if analyze_btn:
         if not user_input.strip():
-            st.warning("⚠️ Teks tidak boleh kosong.")
-        else:
-            with st.spinner("Menganalisis..."):
-                pred1, conf1 = predict_tahap1(user_input, tokenizer, model_t1)
-                label2, conf2 = None, None
-                if pred1 == 1:
-                    label2, conf2 = predict_tahap2(user_input, svm, tfidf, le)
-
-            st.session_state.user_input = user_input
-            st.session_state.result = {
-                "pred1": pred1,
-                "conf1": conf1,
-                "label2": label2,
-                "conf2": conf2,
-                "cleaned": clean_text(user_input)
-            }
-            st.session_state.page = "result"
+            st.session_state.notif_state = "empty"
             st.rerun()
+        else:
+            st.session_state.user_input = user_input
+            st.session_state.notif_state = "analyzing"
+            st.rerun()
+
+    # Jalankan analisis jika state = analyzing
+    if st.session_state.notif_state == "analyzing" and st.session_state.user_input.strip():
+        with st.spinner(""):
+            pred1, conf1 = predict_tahap1(st.session_state.user_input, tokenizer, model_t1)
+            label2, conf2 = None, None
+            if pred1 == 1:
+                label2, conf2 = predict_tahap2(st.session_state.user_input, svm, tfidf, le)
+
+        st.session_state.result = {
+            "pred1": pred1,
+            "conf1": conf1,
+            "label2": label2,
+            "conf2": conf2,
+            "cleaned": clean_text(st.session_state.user_input)
+        }
+        st.session_state.notif_state = "ready"
+        st.session_state.page = "result"
+        st.rerun()
 
     st.markdown("---")
     st.markdown(
