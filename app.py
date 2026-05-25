@@ -191,7 +191,7 @@ st.markdown("""
     .result-box {
         border-radius: 14px;
         padding: 1.2rem 1.5rem;
-        margin-top: 1rem;
+        margin-top: 2rem;
         margin-bottom: 2rem; 
         font-weight: 600;
         font-size: 1rem;
