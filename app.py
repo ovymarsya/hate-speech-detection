@@ -21,11 +21,11 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* ── Animated background ── */
+    /* ── Animated background: cream + teal water-like gradient ── */
     .stApp {
-        background: linear-gradient(-45deg, #0f0c29, #1a1a4e, #0d2137, #1b3a5c, #0f2027);
+        background: linear-gradient(-45deg, #e8f0e9, #d4ece8, #f5f0e8, #c9e4de, #eef4f0);
         background-size: 400% 400%;
-        animation: gradientShift 12s ease infinite;
+        animation: gradientShift 14s ease infinite;
         min-height: 100vh;
     }
 
@@ -35,7 +35,7 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* ── Floating orbs ── */
+    /* ── Floating orbs: sage/teal/gold tones ── */
     .bg-orbs {
         position: fixed;
         top: 0; left: 0;
@@ -47,14 +47,15 @@ st.markdown("""
     .orb {
         position: absolute;
         border-radius: 50%;
-        filter: blur(80px);
-        opacity: 0.18;
+        filter: blur(90px);
+        opacity: 0.22;
         animation: floatOrb linear infinite;
     }
-    .orb1 { width: 400px; height: 400px; background: #3b82f6; top: -100px; left: -100px; animation-duration: 20s; }
-    .orb2 { width: 300px; height: 300px; background: #06b6d4; top: 40%; right: -80px; animation-duration: 25s; animation-delay: -8s; }
-    .orb3 { width: 250px; height: 250px; background: #6366f1; bottom: -60px; left: 30%; animation-duration: 18s; animation-delay: -4s; }
-    .orb4 { width: 200px; height: 200px; background: #0ea5e9; top: 60%; left: 10%; animation-duration: 22s; animation-delay: -12s; }
+    .orb1 { width: 450px; height: 450px; background: #7dbfb0; top: -120px; left: -120px; animation-duration: 20s; }
+    .orb2 { width: 320px; height: 320px; background: #a8d5c2; top: 35%; right: -80px; animation-duration: 26s; animation-delay: -9s; }
+    .orb3 { width: 280px; height: 280px; background: #c9b46e; bottom: -60px; left: 25%; animation-duration: 18s; animation-delay: -5s; }
+    .orb4 { width: 220px; height: 220px; background: #6aab9c; top: 65%; left: 8%; animation-duration: 23s; animation-delay: -13s; }
+    .orb5 { width: 180px; height: 180px; background: #e8d5a3; top: 20%; left: 55%; animation-duration: 19s; animation-delay: -7s; }
 
     @keyframes floatOrb {
         0%   { transform: translateY(0px) translateX(0px) scale(1); }
@@ -63,7 +64,7 @@ st.markdown("""
         100% { transform: translateY(0px) translateX(0px) scale(1); }
     }
 
-    /* ── Stars / particles ── */
+    /* ── Shimmer particles (gold-ish) ── */
     .stars {
         position: fixed;
         top: 0; left: 0;
@@ -73,36 +74,37 @@ st.markdown("""
     }
     .star {
         position: absolute;
-        width: 2px; height: 2px;
-        background: white;
+        width: 3px; height: 3px;
+        background: #c9b46e;
         border-radius: 50%;
         animation: twinkle ease-in-out infinite;
         opacity: 0;
     }
     @keyframes twinkle {
         0%, 100% { opacity: 0; transform: scale(1); }
-        50%       { opacity: 0.7; transform: scale(1.5); }
+        50%       { opacity: 0.5; transform: scale(1.8); }
     }
 
-    /* ── Glass card overlay ── */
+    /* ── Layout ── */
     .block-container {
         position: relative;
         z-index: 10;
         padding-top: 2rem !important;
     }
 
-    /* ── Title box (glassmorphism) ── */
+    /* ── Title box: frosted glass, sage border ── */
     .title-box {
-        background: rgba(255, 255, 255, 0.07);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(125, 191, 176, 0.35);
+        border-top: 2px solid rgba(201, 180, 110, 0.6);
         border-radius: 20px;
         padding: 2.2rem 2rem;
         margin-bottom: 1.5rem;
-        color: white;
+        color: #2d4a3e;
         text-align: center;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(109, 171, 156, 0.18), inset 0 1px 0 rgba(255,255,255,0.7);
         animation: fadeSlideDown 0.6s ease;
     }
     .title-box h1 {
@@ -110,11 +112,12 @@ st.markdown("""
         font-weight: 700;
         margin: 0;
         letter-spacing: -0.3px;
-        text-shadow: 0 2px 12px rgba(59, 130, 246, 0.5);
+        color: #2d4a3e;
+        text-shadow: 0 1px 4px rgba(109, 171, 156, 0.2);
     }
     .title-box p {
         font-size: 0.88rem;
-        opacity: 0.75;
+        color: #5a7a6e;
         margin: 0.5rem 0 0;
         letter-spacing: 0.3px;
     }
@@ -124,67 +127,78 @@ st.markdown("""
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Streamlit elements on dark bg ── */
+    /* ── Inputs ── */
     .stTextArea textarea {
-        background: rgba(255,255,255,0.06) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
+        background: rgba(255,255,255,0.55) !important;
+        border: 1px solid rgba(125, 191, 176, 0.4) !important;
         border-radius: 12px !important;
-        color: #e2e8f0 !important;
+        color: #2d4a3e !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         backdrop-filter: blur(10px);
     }
-    .stTextArea textarea::placeholder { color: rgba(255,255,255,0.35) !important; }
+    .stTextArea textarea::placeholder { color: rgba(90,122,110,0.5) !important; }
     .stTextArea textarea:focus {
-        border-color: rgba(59,130,246,0.6) !important;
-        box-shadow: 0 0 0 3px rgba(59,130,246,0.15) !important;
+        border-color: rgba(106, 171, 156, 0.7) !important;
+        box-shadow: 0 0 0 3px rgba(106,171,156,0.15) !important;
     }
-    label, .stTextArea label { color: #cbd5e1 !important; }
+    label, .stTextArea label { color: #3d5e52 !important; }
 
+    /* ── Button: gold accent ── */
     .stButton > button {
-        background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
+        background: linear-gradient(135deg, #8aab8e, #6aab9c) !important;
         border: none !important;
         border-radius: 12px !important;
         color: white !important;
         font-weight: 600 !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         padding: 0.6rem 1.5rem !important;
-        box-shadow: 0 4px 20px rgba(59,130,246,0.4) !important;
+        box-shadow: 0 4px 20px rgba(106,171,156,0.35) !important;
         transition: all 0.2s ease !important;
         letter-spacing: 0.2px !important;
     }
     .stButton > button:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 8px 28px rgba(59,130,246,0.55) !important;
+        box-shadow: 0 8px 28px rgba(106,171,156,0.5) !important;
+        background: linear-gradient(135deg, #7dbd92, #5c9e8f) !important;
     }
     .stButton > button:active { transform: translateY(0px) !important; }
 
-    /* Success/Info/Warning boxes */
-    .stSuccess, .stInfo, .stWarning {
-        background: rgba(255,255,255,0.06) !important;
+    /* ── Streamlit alert boxes ── */
+    .stSuccess {
+        background: rgba(168, 213, 194, 0.25) !important;
+        border-left-color: #6aab9c !important;
+        color: #2d4a3e !important;
         border-radius: 10px !important;
-        backdrop-filter: blur(8px) !important;
-        color: #e2e8f0 !important;
     }
-    .stSuccess { border-left-color: #10b981 !important; }
-    .stInfo    { border-left-color: #3b82f6 !important; }
-    .stWarning { border-left-color: #f59e0b !important; }
+    .stInfo {
+        background: rgba(201, 180, 110, 0.15) !important;
+        border-left-color: #c9b46e !important;
+        color: #4a3d1e !important;
+        border-radius: 10px !important;
+    }
+    .stWarning {
+        background: rgba(245, 200, 100, 0.2) !important;
+        border-left-color: #d4a84b !important;
+        color: #4a3a10 !important;
+        border-radius: 10px !important;
+    }
 
-    /* Expander */
+    /* ── Expander ── */
     .streamlit-expanderHeader {
-        background: rgba(255,255,255,0.05) !important;
-        color: #94a3b8 !important;
+        background: rgba(255,255,255,0.4) !important;
+        color: #5a7a6e !important;
         border-radius: 10px !important;
     }
     .streamlit-expanderContent {
-        background: rgba(255,255,255,0.03) !important;
+        background: rgba(255,255,255,0.3) !important;
         border-radius: 0 0 10px 10px !important;
     }
 
-    /* Markdown headings */
-    h3 { color: #e2e8f0 !important; }
-    hr { border-color: rgba(255,255,255,0.1) !important; }
+    /* ── Typography ── */
+    h3 { color: #2d4a3e !important; }
+    hr { border-color: rgba(125, 191, 176, 0.25) !important; }
 
-    /* ── Result boxes (glassmorphism) ── */
+    /* ── Result boxes ── */
     .result-box {
         border-radius: 14px;
         padding: 1.2rem 1.5rem;
@@ -199,13 +213,34 @@ st.markdown("""
         from { opacity: 0; transform: translateY(10px); }
         to   { opacity: 1; transform: translateY(0); }
     }
-    .result-nonhate { background: rgba(16,185,129,0.15); color: #6ee7b7; border-left: 4px solid #10b981; }
-    .result-hate    { background: rgba(239,68,68,0.15);  color: #fca5a5; border-left: 4px solid #ef4444; }
-    .result-sara    { background: rgba(245,158,11,0.15); color: #fcd34d; border-left: 4px solid #f59e0b; }
-    .result-umum    { background: rgba(244,63,94,0.15);  color: #fda4af; border-left: 4px solid #f43f5e; }
+
+    .result-nonhate {
+        background: rgba(168, 213, 194, 0.3);
+        color: #1e4a38;
+        border-left: 4px solid #6aab9c;
+        box-shadow: 0 4px 16px rgba(106,171,156,0.15);
+    }
+    .result-hate {
+        background: rgba(220, 150, 130, 0.2);
+        color: #5a2010;
+        border-left: 4px solid #c87060;
+        box-shadow: 0 4px 16px rgba(200,112,96,0.15);
+    }
+    .result-sara {
+        background: rgba(201, 180, 110, 0.25);
+        color: #4a3010;
+        border-left: 4px solid #c9b46e;
+        box-shadow: 0 4px 16px rgba(201,180,110,0.18);
+    }
+    .result-umum {
+        background: rgba(210, 140, 120, 0.2);
+        color: #5a2018;
+        border-left: 4px solid #d4806a;
+        box-shadow: 0 4px 16px rgba(212,128,106,0.15);
+    }
 
     .confidence-bar {
-        background: rgba(255,255,255,0.1);
+        background: rgba(125, 191, 176, 0.2);
         border-radius: 8px;
         height: 8px;
         margin-top: 0.6rem;
@@ -214,15 +249,15 @@ st.markdown("""
     .confidence-fill {
         height: 100%;
         border-radius: 8px;
-        background: linear-gradient(90deg, #3b82f6, #60a5fa);
-        box-shadow: 0 0 8px rgba(96,165,250,0.6);
+        background: linear-gradient(90deg, #6aab9c, #c9b46e);
+        box-shadow: 0 0 8px rgba(106,171,156,0.4);
     }
 
     .step-badge {
         display: inline-block;
-        background: rgba(30,58,95,0.8);
-        border: 1px solid rgba(59,130,246,0.4);
-        color: #93c5fd;
+        background: rgba(45, 74, 62, 0.75);
+        border: 1px solid rgba(201, 180, 110, 0.5);
+        color: #e8d5a3;
         border-radius: 20px;
         padding: 0.25rem 0.9rem;
         font-size: 0.78rem;
@@ -233,7 +268,7 @@ st.markdown("""
 
     .info-small {
         font-size: 0.8rem;
-        opacity: 0.75;
+        opacity: 0.72;
         margin-top: 0.3rem;
     }
 </style>
@@ -244,23 +279,24 @@ st.markdown("""
     <div class="orb orb2"></div>
     <div class="orb orb3"></div>
     <div class="orb orb4"></div>
+    <div class="orb orb5"></div>
 </div>
 
-<!-- Twinkling stars -->
+<!-- Gold shimmer particles -->
 <div class="stars" id="stars"></div>
 
 <script>
 (function() {
     const container = document.getElementById('stars');
     if (!container) return;
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 60; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left   = Math.random() * 100 + '%';
         star.style.top    = Math.random() * 100 + '%';
-        star.style.animationDuration  = (2 + Math.random() * 4) + 's';
-        star.style.animationDelay     = (Math.random() * 5) + 's';
-        star.style.width  = star.style.height = (1 + Math.random() * 2) + 'px';
+        star.style.animationDuration  = (3 + Math.random() * 5) + 's';
+        star.style.animationDelay     = (Math.random() * 6) + 's';
+        star.style.width  = star.style.height = (1.5 + Math.random() * 2) + 'px';
         container.appendChild(star);
     }
 })();
@@ -382,7 +418,7 @@ if st.session_state.page == "input":
 
     st.markdown("---")
     st.markdown(
-        "<div style='text-align:center; color:rgba(148,163,184,0.6); font-size:0.8rem;'>"
+        "<div style='text-align:center; color:#8aaa96; font-size:0.8rem;'>"
         "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
         "</div>",
         unsafe_allow_html=True
@@ -466,7 +502,7 @@ elif st.session_state.page == "result":
 
     st.markdown("---")
     st.markdown(
-        "<div style='text-align:center; color:rgba(148,163,184,0.6); font-size:0.8rem;'>"
+        "<div style='text-align:center; color:#8aaa96; font-size:0.8rem;'>"
         "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
         "</div>",
         unsafe_allow_html=True
