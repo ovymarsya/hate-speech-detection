@@ -77,13 +77,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ───────────────────────────────────────────────────────
-st.markdown("""
-<div class="title-box">
-    <h1>🔍 Deteksi Ujaran Kebencian SARA</h1>
-    <p>Sistem deteksi dua tahap: Hate Speech → Klasifikasi SARA</p>
-</div>
-""", unsafe_allow_html=True)
+# ── Session state init ───────────────────────────────────────────
+if "page" not in st.session_state:
+    st.session_state.page = "input"
+if "result" not in st.session_state:
+    st.session_state.result = None
+if "user_input" not in st.session_state:
+    st.session_state.user_input = ""
 
 # ── Load models ──────────────────────────────────────────────────
 @st.cache_resource
@@ -123,111 +123,161 @@ def predict_tahap1(text, tokenizer, model):
     probs = torch.softmax(logits, dim=-1).squeeze().numpy()
     pred  = int(np.argmax(probs))
     conf  = float(probs[pred])
-    return pred, conf  # 0=Non-Hate, 1=Hate
+    return pred, conf
 
 def predict_tahap2(text, svm, tfidf, le):
     cleaned = clean_text(text)
     vec  = tfidf.transform([cleaned])
     pred = svm.predict(vec)[0]
     label = le.inverse_transform([pred])[0]
-    # SVM decision function → confidence proxy
     decision = svm.decision_function(vec)[0]
-    conf = float(1 / (1 + np.exp(-abs(decision))))  # sigmoid
-    return label, conf  # 'HS_SARA' or 'HS_Umum'
+    conf = float(1 / (1 + np.exp(-abs(decision))))
+    return label, conf
 
 # ── Load with spinner ────────────────────────────────────────────
 with st.spinner("Memuat model... (pertama kali mungkin ~1 menit)"):
     try:
         tokenizer, model_t1 = load_tahap1()
         svm, tfidf, le      = load_tahap2()
-        st.success("✅ Model berhasil dimuat!")
+        models_loaded = True
     except Exception as e:
         st.error(f"❌ Gagal memuat model: {e}")
         st.stop()
 
-# ── Input ────────────────────────────────────────────────────────
-st.markdown("### 💬 Masukkan Komentar")
-user_input = st.text_area(
-    label="",
-    placeholder="Contoh: orang madura emang kasar banget...",
-    height=130
-)
+# ── HALAMAN 1 — INPUT ────────────────────────────────────────────
+if st.session_state.page == "input":
 
-col1, col2, col3 = st.columns([1, 1, 1])
-with col2:
-    analyze_btn = st.button("🔍 Analisis", use_container_width=True)
+    st.markdown("""
+    <div class="title-box">
+        <h1>🔍 Deteksi Ujaran Kebencian SARA</h1>
+        <p>Sistem deteksi dua tahap: Hate Speech → Klasifikasi SARA</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ── Prediction ───────────────────────────────────────────────────
-if analyze_btn:
-    if not user_input.strip():
-        st.warning("⚠️ Teks tidak boleh kosong.")
+    if models_loaded:
+        st.success("✅ Model berhasil dimuat!")
+
+    st.markdown("### 💬 Masukkan Komentar")
+    user_input = st.text_area(
+        label="",
+        placeholder="Contoh: orang madura emang kasar banget...",
+        height=130,
+        value=st.session_state.user_input
+    )
+
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        analyze_btn = st.button("🔍 Analisis", use_container_width=True)
+
+    if analyze_btn:
+        if not user_input.strip():
+            st.warning("⚠️ Teks tidak boleh kosong.")
+        else:
+            with st.spinner("Menganalisis..."):
+                pred1, conf1 = predict_tahap1(user_input, tokenizer, model_t1)
+                label2, conf2 = None, None
+                if pred1 == 1:
+                    label2, conf2 = predict_tahap2(user_input, svm, tfidf, le)
+
+            st.session_state.user_input = user_input
+            st.session_state.result = {
+                "pred1": pred1,
+                "conf1": conf1,
+                "label2": label2,
+                "conf2": conf2,
+                "cleaned": clean_text(user_input)
+            }
+            st.session_state.page = "result"
+            st.rerun()
+
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align:center; color:#94a3b8; font-size:0.8rem;'>"
+        "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
+        "</div>",
+        unsafe_allow_html=True
+    )
+
+# ── HALAMAN 2 — HASIL ────────────────────────────────────────────
+elif st.session_state.page == "result":
+
+    st.markdown("""
+    <div class="title-box">
+        <h1>🔍 Deteksi Ujaran Kebencian SARA</h1>
+        <p>Sistem deteksi dua tahap: Hate Speech → Klasifikasi SARA</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    r = st.session_state.result
+    pred1  = r["pred1"]
+    conf1  = r["conf1"]
+    label2 = r["label2"]
+    conf2  = r["conf2"]
+
+    st.markdown("---")
+
+    st.markdown('<span class="step-badge">TAHAP 1 — Deteksi Hate Speech</span>', unsafe_allow_html=True)
+
+    if pred1 == 0:
+        st.markdown(f"""
+        <div class="result-box result-nonhate">
+            ✅ Non-Hate Speech
+            <div class="info-small">Confidence: {conf1*100:.1f}%</div>
+            <div class="confidence-bar">
+                <div class="confidence-fill" style="width:{conf1*100:.1f}%"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.info("Komentar ini tidak terdeteksi sebagai ujaran kebencian.")
+
     else:
-        with st.spinner("Menganalisis..."):
-            pred1, conf1 = predict_tahap1(user_input, tokenizer, model_t1)
+        st.markdown(f"""
+        <div class="result-box result-hate">
+            ⚠️ Hate Speech Terdeteksi
+            <div class="info-small">Confidence: {conf1*100:.1f}%</div>
+            <div class="confidence-bar">
+                <div class="confidence-fill" style="width:{conf1*100:.1f}%"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.markdown("---")
+        st.markdown('<span class="step-badge">TAHAP 2 — Klasifikasi SARA</span>', unsafe_allow_html=True)
 
-        # ── Tahap 1 result ────────────────────────────────────────
-        st.markdown('<span class="step-badge">TAHAP 1 — Deteksi Hate Speech</span>', unsafe_allow_html=True)
-
-        if pred1 == 0:
+        if label2 == "HS_SARA":
             st.markdown(f"""
-            <div class="result-box result-nonhate">
-                ✅ Non-Hate Speech
-                <div class="info-small">Confidence: {conf1*100:.1f}%</div>
+            <div class="result-box result-sara">
+                🚨 Hate Speech SARA (Suku, Agama, Ras, Antargolongan)
+                <div class="info-small">Confidence: {conf2*100:.1f}%</div>
                 <div class="confidence-bar">
-                    <div class="confidence-fill" style="width:{conf1*100:.1f}%"></div>
+                    <div class="confidence-fill" style="width:{conf2*100:.1f}%"></div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
-            st.info("Komentar ini tidak terdeteksi sebagai ujaran kebencian.")
-
         else:
             st.markdown(f"""
-            <div class="result-box result-hate">
-                ⚠️ Hate Speech Terdeteksi
-                <div class="info-small">Confidence: {conf1*100:.1f}%</div>
+            <div class="result-box result-umum">
+                ⚡ Hate Speech Umum (bukan SARA)
+                <div class="info-small">Confidence: {conf2*100:.1f}%</div>
                 <div class="confidence-bar">
-                    <div class="confidence-fill" style="width:{conf1*100:.1f}%"></div>
+                    <div class="confidence-fill" style="width:{conf2*100:.1f}%"></div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
-            # ── Tahap 2 result ─────────────────────────────────────
-            st.markdown('<span class="step-badge">TAHAP 2 — Klasifikasi SARA</span>', unsafe_allow_html=True)
+    with st.expander("📄 Lihat teks setelah preprocessing"):
+        st.code(r["cleaned"])
 
-            label2, conf2 = predict_tahap2(user_input, svm, tfidf, le)
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        if st.button("🔄 Analisis Teks Lain", use_container_width=True):
+            st.session_state.page = "input"
+            st.rerun()
 
-            if label2 == "HS_SARA":
-                st.markdown(f"""
-                <div class="result-box result-sara">
-                    🚨 Hate Speech SARA (Suku, Agama, Ras, Antargolongan)
-                    <div class="info-small">Confidence: {conf2*100:.1f}%</div>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill" style="width:{conf2*100:.1f}%"></div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown(f"""
-                <div class="result-box result-umum">
-                    ⚡ Hate Speech Umum (bukan SARA)
-                    <div class="info-small">Confidence: {conf2*100:.1f}%</div>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill" style="width:{conf2*100:.1f}%"></div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
-        # ── Cleaned text info ─────────────────────────────────────
-        with st.expander("📄 Lihat teks setelah preprocessing"):
-            st.code(clean_text(user_input))
-
-# ── Footer ───────────────────────────────────────────────────────
-st.markdown("---")
-st.markdown(
-    "<div style='text-align:center; color:#94a3b8; font-size:0.8rem;'>"
-    "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
-    "</div>",
-    unsafe_allow_html=True
-)
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align:center; color:#94a3b8; font-size:0.8rem;'>"
+        "Sistem Deteksi Ujaran Kebencian SARA · Skripsi Sistem Informasi"
+        "</div>",
+        unsafe_allow_html=True
+    )
